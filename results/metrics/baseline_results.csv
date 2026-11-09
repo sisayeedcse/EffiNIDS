@@ -1,0 +1,2 @@
+Experiment,Original_Features,Encoded_Features,Accuracy,Precision,Attack_Recall,Attack_F1,Macro_F1,False_Positive_Rate,Training_Time_Seconds,Inference_Time_Seconds,Inference_Milliseconds_Per_Record,TN,FP,FN,TP
+Baseline Random Forest,42,194,0.8709128892775592,0.8170936734768466,0.986345186623136,0.8937773602254783,0.8646413499780851,0.2705135135135135,61.28100529999938,0.5155498000003718,0.006261839867856626,26991,10009,619,44713

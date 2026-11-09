@@ -1,0 +1,2 @@
+Experiment,Original_Features,Encoded_Features_Before,Encoded_Features_Selected,Feature_Reduction_Percent,Accuracy,Precision,Attack_Recall,Attack_F1,Macro_F1,False_Positive_Rate,Training_Time_Seconds,Inference_Time_Seconds,Inference_Milliseconds_Per_Record,TN,FP,FN,TP
+Mutual Information + Random Forest,42,194,97,50.0,0.8714716027789924,0.8182467580042494,0.9854628077296391,0.8941037547033864,0.8653199198628153,0.2681891891891892,75.26489130000027,0.4380993999993734,0.005321131516292248,27077,9923,659,44673
