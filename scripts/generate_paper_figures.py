@@ -24,53 +24,70 @@ print("Generating Figure 1: Pipeline Diagram...")
 # -------------------------------------------------------------
 # Figure 1: Pipeline Diagram
 # -------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(7.1, 2.6), dpi=300)
-ax.set_xlim(0, 100)
-ax.set_ylim(0, 40)
+fig, ax = plt.subplots(figsize=(8.8, 3.2), dpi=300)
+ax.set_xlim(0, 105)
+ax.set_ylim(0, 44)
 ax.axis('off')
 
-def draw_box(x, y, w, h, text, bg="#f0f4f8", border="#1f497d", title=""):
-    rect = patches.FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.4",
-                                  facecolor=bg, edgecolor=border, linewidth=1.2)
+def draw_box(x, y, w, h, text, bg='#f0f4f8', border='#1f497d', title='', title_color=None):
+    if title_color is None:
+        title_color = border
+    rect = patches.FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0.2,rounding_size=0.8',
+                                  facecolor=bg, edgecolor=border, linewidth=1.3)
     ax.add_patch(rect)
     if title:
-        ax.text(x + w/2, y + h - 2.5, title, ha='center', va='center',
-                fontsize=8, fontweight='bold', color=border)
-        ax.text(x + w/2, y + (h-2.5)/2, text, ha='center', va='center',
-                fontsize=7.5, color='#111111')
+        ax.text(x + w/2, y + h - 2.8, title, ha='center', va='center',
+                fontsize=8.5, fontweight='bold', color=title_color)
+        ax.text(x + w/2, y + (h - 2.8)/2, text, ha='center', va='center',
+                fontsize=7.5, color='#222222', linespacing=1.35)
     else:
         ax.text(x + w/2, y + h/2, text, ha='center', va='center',
-                fontsize=8, color='#111111')
+                fontsize=7.5, color='#222222', linespacing=1.35)
 
-def draw_arrow(x1, y1, x2, y2, label=""):
+def draw_arrow(x1, y1, x2, y2):
     ax.annotate('', xy=(x2, y2), xytext=(x1, y1),
-                arrowprops=dict(arrowstyle="->", color="#333333", lw=1.2))
-    if label:
-        ax.text((x1+x2)/2, (y1+y2)/2 + 1.2, label, ha='center', va='center',
-                fontsize=7, color="#333333", style='italic')
+                arrowprops=dict(arrowstyle='-|> ,head_width=0.22,head_length=0.40',
+                                color='#2b2b2b', lw=1.2, shrinkA=0.5, shrinkB=0.5))
 
-# Boxes
-draw_box(1, 14, 15, 12, "175,341 Train\n82,332 Test\n45 Columns", bg="#eef2f7", border="#2c3e50", title="UNSW-NB15")
-draw_arrow(16.5, 20, 21.5, 20)
+# Box 1: UNSW-NB15
+draw_box(1.5, 14.0, 15.0, 16.0, '175,341 Train\n82,332 Test\n42 Predictors',
+         bg='#f4f7fb', border='#1b3a57', title='UNSW-NB15')
 
-draw_box(21.5, 14, 17, 12, "Drop id & attack_cat\nOne-Hot Categoricals\n194 Encoded Feats", bg="#eef2f7", border="#2c3e50", title="Preprocessing")
-draw_arrow(39, 20, 44, 30)
-draw_arrow(39, 20, 44, 20)
-draw_arrow(39, 20, 44, 10)
+# Arrow 1 -> 2
+draw_arrow(17.0, 22.0, 21.0, 22.0)
 
-# 3 Branches
-draw_box(44, 25, 22, 10, "Baseline (All)\n194 Features (0% cut)", bg="#f8f9fa", border="#495057")
-draw_box(44, 15, 22, 10, "Mutual Information\nTop 97 Features (50% cut)", bg="#e8f4f8", border="#17a2b8")
-draw_box(44, 5, 22, 10, "RF Gini Importance\nTop 97 Features (50% cut)", bg="#eaf2e8", border="#28a745")
+# Box 2: Preprocessing
+draw_box(21.5, 14.0, 17.0, 16.0, 'Drop id & attack_cat\nOne-Hot Categoricals\n194 Encoded Feats',
+         bg='#f4f7fb', border='#1b3a57', title='Preprocessing')
 
-draw_arrow(66.5, 30, 71.5, 20)
-draw_arrow(66.5, 20, 71.5, 20)
-draw_arrow(66.5, 10, 71.5, 20)
+# Arrow 2 -> Branches
+draw_arrow(39.0, 22.0, 44.2, 33.5)
+draw_arrow(39.0, 22.0, 44.2, 22.0)
+draw_arrow(39.0, 22.0, 44.2, 10.5)
 
-draw_box(71.5, 14, 12, 12, "200 Trees\nmax_features='sqrt'\nrandom_state=42", bg="#fff9e6", border="#e0a800", title="Random Forest")
-draw_arrow(84, 20, 88, 20)
+# Middle 3 Branches
+draw_box(44.8, 28.5, 18.2, 10.0, 'Baseline (All)\n194 Features (0% cut)',
+         bg='#f8f9fa', border='#495057', title='Full Feature Set', title_color='#333333')
+draw_box(44.8, 17.0, 18.2, 10.0, 'Mutual Information\nTop 97 Features (50% cut)',
+         bg='#f0f9fa', border='#0e7490', title='Filter Selection', title_color='#0e7490')
+draw_box(44.8, 5.5,  18.2, 10.0, 'RF Gini Importance\nTop 97 Features (50% cut)',
+         bg='#f2f9f0', border='#15803d', title='Embedded Selection', title_color='#15803d')
 
-draw_box(88, 12, 11, 16, "Accuracy, F1\nInference Time\nSeen vs Unseen\nConflict Audit", bg="#fbeee6", border="#d9534f", title="Evaluation")
+# Arrows from branches to Random Forest
+draw_arrow(63.5, 33.5, 68.5, 26.5)
+draw_arrow(63.5, 22.0, 68.5, 22.0)
+draw_arrow(63.5, 10.5, 68.5, 17.5)
+
+# Box 4: Random Forest
+draw_box(69.0, 13.5, 15.5, 17.0, '200 Decision Trees\nCriterion: Gini\nSplit: sqrt(p) Feats',
+         bg='#fefce8', border='#b45309', title='Random Forest', title_color='#92400e')
+
+# Arrow 4 -> 5
+draw_arrow(85.0, 22.0, 89.5, 22.0)
+
+# Box 5: Evaluation
+draw_box(90.0, 11.5, 13.5, 21.0, 'Accuracy & F1\nInference Latency\nSeen vs. Unseen\nConflict Audit',
+         bg='#fef2f2', border='#b91c1c', title='Evaluation', title_color='#991b1b')
 
 plt.tight_layout()
 fig.savefig(OUT_DIR / "pipeline.pdf", bbox_inches='tight')
